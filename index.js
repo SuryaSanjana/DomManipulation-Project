@@ -3,7 +3,7 @@ const taskContainer=document.querySelector(".task__container");
 console.log(taskContainer);
 
 //global store
-const globalStore=[];
+let globalStore=[];
 
 const newCard=(
   {
@@ -18,8 +18,8 @@ const newCard=(
   <button type="button" class="btn btn-outline-success">
     <i class="fas fa-pencil-alt"></i>
   </button>
-  <button type="button" class="btn btn-outline-danger">
-    <i class="fas fa-dumpster"></i>
+  <button type="button" class="btn btn-outline-danger"  id = ${id} onclick="deleteCard.apply(this,arguments)">
+    <i class="fas fa-dumpster"  id = ${id}  onclick="deleteCard.apply(this,arguments)" ></i>
   </button>
 </div>
 <img src=${imageUrl}
@@ -40,7 +40,7 @@ const newCard=(
 
 const loadInitialTaskCards=() => {
   //access local storage
- const getInitialData=localStorage.tasky;
+ const getInitialData=localStorage.tasky; //localStorage.key or localStorage.getItem("key")
  if(!getInitialData)  return;   // if key is not found then just return from function
 
   // convert strinified-object to object
@@ -71,4 +71,39 @@ const saveChanges = ()=> {
    //Application Programming Interface(API)
    //adding to local storage  
    localStorage.setItem("tasky",JSON.stringify({cards: globalStore}));    
+};
+
+const deleteCard=(event) => {
+ //id
+ event=window.event;
+ const targetID=event.target.id;
+ const tagname= event.target.tagName;   
+   //search globalStore, remove objeect which matches id
+ const newUpdatedArray=globalStore.filter(
+   (cardObject)=>cardObject.id!==targetID);
+
+
+//  /*loop over new globalStore and inject updated carrds to DOM 
+//  newUpdatedArray((cardObject)=>
+//  {
+//   const createNewCard=newCard(cardObject);                             //doesnt work for DOM    
+//   taskContainer.insertAdjacentHTML("beforeend",createNewCard);
+//  });
+
+ globalStore =newUpdatedArray;  // updated the original aarray*/
+ localStorage.setItem("tasky",JSON.stringify({cards : globalStore}));
+
+
+//access DOM to remove them
+ if(tagname==="BUTTON"){
+   //taskContainer
+   return  event.target.parentNode.parentNode.parentNode.parentNode.removeChild(
+     event.target.parentNode.parentNode.parentNode //col-md-6
+   );
+ }
+ //on icon
+ return  event.target.parentNode.parentNode.parentNode.parentNode.parentNode.removeChild(
+  event.target.parentNode.parentNode.parentNode.parentNode //col-md-6
+);
+ 
 };
