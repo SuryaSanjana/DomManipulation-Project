@@ -3,21 +3,7 @@ const taskContainer=document.querySelector(".task__container");
 console.log(taskContainer);
 
 //global store
-//const globalStore=[];
-
-// const loadInitialTaskCards=() => {
-//   //access local storage
-//  const getInitialData=localStorage.tasky;
-//  if(!getInitialData)  return;
-//   // convert strinified-object to object
-//   const taskObjects =JSON.parse(getInitialData);
-//   //map around the array to generate html cards and inject it to DOM
-//   cards.map((cardObject) =>{
-//     const createNewCard=newCard(cardObject);
-//     taskContainer.insertAdjacentHTML("beforeend",createNewCard); //to insert inside parent element
-//   globalStore.push(cardObject);
-//   });
-// };
+const globalStore=[];
 
 const newCard=(
   {
@@ -51,6 +37,24 @@ const newCard=(
 </div>
 </div>`;
 
+
+const loadInitialTaskCards=() => {
+  //access local storage
+ const getInitialData=localStorage.tasky;
+ if(!getInitialData)  return;   // if key is not found then just return from function
+
+  // convert strinified-object to object
+  const {cards} =JSON.parse(getInitialData);
+
+  //map around the array to generate html cards and inject it to DOM
+  cards.map((cardObject) =>{
+    const createNewCard=newCard(cardObject);
+    taskContainer.insertAdjacentHTML("beforeend",createNewCard); //to insert inside parent element
+  globalStore.push(cardObject);
+  });
+};
+
+
 const saveChanges = ()=> {
  const taskData = {
    id: `${Date.now()}`,  //unique number for card id
@@ -63,8 +67,8 @@ const saveChanges = ()=> {
  // HTML Code
  const createNewCard = newCard(taskData);
   taskContainer.insertAdjacentHTML("beforeend",createNewCard); //to insert inside parent element
-  // globalStore.push(taskData);
-  // //Application Programming Interface(API)
-  // //adding to local storage
-  // localStorage.setItem("tasky",JSON.stringify({cards: globalStore}));    
+   globalStore.push(taskData);
+   //Application Programming Interface(API)
+   //adding to local storage  
+   localStorage.setItem("tasky",JSON.stringify({cards: globalStore}));    
 };
