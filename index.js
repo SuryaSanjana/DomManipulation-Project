@@ -31,7 +31,7 @@ const newCard=(
   <span class="badge bg-primary">${taskType}</span>
 </div>
 <div class="card-footer text-muted">
-  <button type="button" class="btn btn-outline-primary float-end rounded-pill">
+  <button type="button"    id = ${id} class="btn btn-outline-primary float-end rounded-pill">
     Open Task</button>
 </div>
 </div>
@@ -136,5 +136,49 @@ const editCard=(event)=>{
   taskTitle.setAttribute("contenteditable","true");
   taskDescription.setAttribute("contenteditable","true");
   taskType.setAttribute("contenteditable","true");  // (attributename,value)
+  submitButton.setAttribute("onclick","saveEditChanges.apply(this,arguments)");  //when button clicked ,this func will be called
   submitButton.innerHTML="Save Changes" // here we change the text open task to save changes
+};
+
+// to save the edited changes
+const saveEditChanges=(event)=>{
+//id
+event=window.event;
+const targetID=event.target.id;
+console.log(targetID);
+const tagname= event.target.tagName;  
+
+let parentElement;
+if(tagname==="BUTTON"){
+  parentElement=event.target.parentNode.parentNode;
+}else{
+ parentElement=event.target.parentNode.parentNode.parentNode;
+}
+
+
+let taskTitle = parentElement.childNodes[5].childNodes[1];
+let taskDescription = parentElement.childNodes[5].childNodes[3];
+let taskType = parentElement.childNodes[5].childNodes[5];
+ let submitButton = parentElement.childNodes[7].childNodes[1];
+
+ const updatedData= {
+   taskTitle : taskTitle.innerHTML,
+   taskDescription : taskDescription.innerHTML,
+   taskType : taskType.innerHTML
+ };
+ // we need to update the data tolocal and global storage
+ globalStore= globalStore.map((task)=>{
+   if(task.id===targetID){
+     return {
+      id: task.id,
+      imageUrl :task.imageUrl,
+      taskTitle:updatedData.taskTitle,
+      taskType: updatedData.taskType,
+      taskDescription: updatedData.taskDescription,
+     };
+   }
+   return task; // return statement is needed becoz if condition is false the original must still exist in global storage
+ });
+ 
+ localStorage.setItem("tasky",JSON.stringify({cards : globalStore}));
 };
