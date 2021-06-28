@@ -181,4 +181,11 @@ let taskType = parentElement.childNodes[5].childNodes[5];
  });
  
  localStorage.setItem("tasky",JSON.stringify({cards : globalStore}));
+
+ // to remove attributes so that after clicking save changes the edit option should disable until edit is clicked again
+ taskTitle.setAttribute("contenteditable","false");
+ taskDescription.setAttribute("contenteditable","false");
+ taskType.setAttribute("contenteditable","false");  // (attributename,value)
+ submitButton.removeAttribute("onclick");  // to remove save edit changes func in button after clicking save changes  
+ submitButton.innerHTML="Open Task" // here we change the text open task to save changes
 };
